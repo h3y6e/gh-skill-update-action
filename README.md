@@ -22,35 +22,27 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/create-github-app-token@v3
-        id: app-token
-        with:
-          client-id: ${{ vars.APP_CLIENT_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
       - uses: actions/checkout@v6
-        with:
-          token: ${{ steps.app-token.outputs.token }}
 
       - uses: h3y6e/gh-skill-update-action@v1
         id: skill-update
-        with:
-          token: ${{ steps.app-token.outputs.token }}
 
       - name: Enable auto-merge
         if: steps.skill-update.outputs.pr-number != ''
         run: gh pr merge "${{ steps.skill-update.outputs.pr-number }}" --auto
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
 ```
 
 This action runs `gh skill update --all` by default. If `dir` is set, it runs `gh skill update --dir <dir> --all`.
+
+To use a GitHub App installation token instead of the workflow `GITHUB_TOKEN`, pass it with `token` and configure the required permissions on that App token.
 
 ## Inputs
 
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
-| `token` | yes | | GitHub token used for `gh` and pull request creation. |
+| `token` | no | workflow `github.token` | GitHub token used for `gh` and pull request creation. |
 | `dir` | no | | Directory containing skills. When empty, `gh skill update` uses its default scan behavior. |
 | `branch` | no | `gh-skill-update-action/patch` | The pull request branch name. |
 | `commit-message` | no | `[gh-skill-update-action] automated change` | The message to use when committing changes. |
@@ -68,9 +60,7 @@ This action runs `gh skill update --all` by default. If `dir` is set, it runs `g
 
 The caller workflow must check out the repository before using this action.
 
-The token must have permissions to push changes and create pull requests.
-
-Recommended permissions:
+The token used by this action must have permissions to push changes and create pull requests. When `token` is omitted, grant the workflow `GITHUB_TOKEN` the required permissions:
 
 ```yaml
 permissions:

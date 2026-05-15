@@ -3,8 +3,8 @@ description: Run gh skill update and create a pull request if needed.
 
 inputs:
   token:
-    description: GitHub token used for gh and pull request creation.
-    required: true
+    description: GitHub token used for gh and pull request creation. When omitted, the action uses the workflow GITHUB_TOKEN.
+    required: false
   dir:
     description: Directory containing skills. If empty, gh skill update scans all known agent host directories.
     required: false
@@ -48,14 +48,14 @@ runs:
         fi
       shell: bash
       env:
-        GH_TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ inputs.token || github.token }}
         INPUT_DIR: ${{ inputs.dir }}
 
     - name: Create pull request
       id: pr
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
       with:
-        token: ${{ inputs.token }}
+        token: ${{ inputs.token || github.token }}
         branch: ${{ inputs.branch }}
         commit-message: ${{ inputs.commit-message }}
         title: ${{ inputs.title }}
