@@ -1,0 +1,62 @@
+name: gh-skill-update-action
+description: Run gh skill update and create a pull request if needed.
+
+inputs:
+  token:
+    description: GitHub token used for gh and pull request creation.
+    required: true
+  dir:
+    description: Directory containing skills. If empty, gh skill update scans all known agent host directories.
+    required: false
+    default: ""
+  branch:
+    description: The pull request branch name.
+    required: false
+    default: gh-skill-update-action/patch
+  commit-message:
+    description: The message to use when committing changes.
+    required: false
+    default: "[gh-skill-update-action] automated change"
+  title:
+    description: The title of the pull request.
+    required: false
+    default: Changes by gh-skill-update-action
+  body:
+    description: The body of the pull request.
+    required: false
+    default: "Automated changes by [gh-skill-update-action](https://github.com/h3y6e/gh-skill-update-action)"
+
+outputs:
+  pr-number:
+    description: The pull request number.
+    value: ${{ steps.pr.outputs.pull-request-number }}
+  pr-url:
+    description: The pull request URL.
+    value: ${{ steps.pr.outputs.pull-request-url }}
+
+runs:
+  using: composite
+  steps:
+    - name: Update skills
+      run: |
+        set -euo pipefail
+
+        if [[ -n "$INPUT_DIR" ]]; then
+          gh skill update --dir "$INPUT_DIR" --all
+        else
+          gh skill update --all
+        fi
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+        INPUT_DIR: ${{ inputs.dir }}
+
+    - name: Create pull request
+      id: pr
+      uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      with:
+        token: ${{ inputs.token }}
+        branch: ${{ inputs.branch }}
+        commit-message: ${{ inputs.commit-message }}
+        title: ${{ inputs.title }}
+        body: ${{ inputs.body }}
