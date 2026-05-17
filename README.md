@@ -68,4 +68,4 @@ permissions:
   pull-requests: write
 ```
 
-`gh` and the `gh skill` command must be available in the runner environment.
+On Ubuntu/Debian-based runners, this action installs or updates GitHub CLI from the official apt repository when `gh skill` is unavailable.
