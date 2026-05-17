@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.2.0](https://github.com/h3y6e/gh-skill-update-action/compare/v1.1.0...v1.2.0) - 2026-05-17
+- fix: Install gh when skill command is unavailable by @h3y6e in https://github.com/h3y6e/gh-skill-update-action/pull/7
+
 ## [v1.1.0](https://github.com/h3y6e/gh-skill-update-action/compare/v1...v1.1.0) - 2026-05-15
 - feat: Make token input optional by @h3y6e in https://github.com/h3y6e/gh-skill-update-action/pull/4
 
