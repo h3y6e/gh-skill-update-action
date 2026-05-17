@@ -37,10 +37,23 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Set up GitHub CLI with skill command
+      run: |
+        gh skill --help >/dev/null 2>&1 || {
+          type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)
+          sudo install -d -m 755 /etc/apt/keyrings /etc/apt/sources.list.d
+          out=$(mktemp)
+          wget -nv -O"$out" https://cli.github.com/packages/githubcli-archive-keyring.gpg
+          sudo install -m 644 "$out" /etc/apt/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+          sudo apt update
+          sudo apt install gh -y
+        }
+        gh skill --help >/dev/null
+      shell: bash
+
     - name: Update skills
       run: |
-        set -euo pipefail
-
         if [[ -n "$INPUT_DIR" ]]; then
           gh skill update --dir "$INPUT_DIR" --all
         else
