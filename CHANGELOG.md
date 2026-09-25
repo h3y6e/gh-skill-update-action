@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.2.1](https://github.com/h3y6e/gh-skill-update-action/compare/v1.2.0...v1.2.1) - 2026-09-25
+- Configure Renovate by @renovate[bot] in https://github.com/h3y6e/gh-skill-update-action/pull/9
+
 ## [v1.2.0](https://github.com/h3y6e/gh-skill-update-action/compare/v1.1.0...v1.2.0) - 2026-05-17
 - fix: Install gh when skill command is unavailable by @h3y6e in https://github.com/h3y6e/gh-skill-update-action/pull/7
 
